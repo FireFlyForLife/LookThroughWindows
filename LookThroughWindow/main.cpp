@@ -1,4 +1,5 @@
 #include <string>
+#include <cstring>
 #include <stdio.h>
 #include <Windows.h>
 #include <chrono>
@@ -10,10 +11,30 @@
 #include "subclass.h"
 #include "WindowProperty.h"
 
+#define str(s) std::to_string(s)
+#define println(s) if(typeid(s) == typeid(bool)){\
+	printf("%i\n", s);\
+}else{\
+	printf("%\n", str(s));}
+
+
 using std::string;
 using namespace nana;
 
-const int HOTKEY_BUTTON = 0x47; //g
+struct HOTKEY_INFO {
+	HOTKEY_INFO(int id, int mod, int button) : id(id), mod(mod), button(button)
+	{}
+public:
+	int id;
+	int mod;
+	int button;
+};
+
+const HOTKEY_INFO watchable(1, MOD_NOREPEAT | MOD_CONTROL | MOD_SHIFT, 0x47);
+const HOTKEY_INFO moveable(2, MOD_NOREPEAT | MOD_CONTROL | MOD_SHIFT, 0x48);
+
+const int HOTKEY_BUTTON0 = 0x47; //g
+const int HOTKEY_BUTTON1 = 0x48; //h
 const int HOTKEY_MOD = MOD_NOREPEAT | MOD_CONTROL | MOD_SHIFT;
 const int HOTKEY_ID = 1020304;
 
@@ -23,6 +44,7 @@ bool SetClickThrough(HWND);
 
 timer msgQ;
 HWND optionHandle = NULL;
+WindowProperty* topmostProp = NULL;
 
 std::recursive_mutex subclass::mutex_;
 std::map<HWND, subclass*> subclass::table_;
@@ -42,13 +64,26 @@ void msges(const nana::arg_elapse& elapsed) {
 	}
 }
 
-bool onHotkeyPress(UINT id, WPARAM wParam, LPARAM lParam, LRESULT* lResult) {
-	printf("%i\n", id);
-	printf("%i\n", wParam);
-	printf("%i\n", lParam);
-	printf("%i\n", lResult);
+bool onHotkeyPress(UINT msg, WPARAM hotkeyID, LPARAM lParam, LRESULT* lResult) {
+	if (hotkeyID == watchable.id) {
+		topmostProp->setTopmost(true);
+		topmostProp->setTransparent(true);
+		topmostProp->setClickThrough(true);
+	}
+	else if (hotkeyID == moveable.id) {
+		topmostProp->setTopmost(false);
+		topmostProp->setTransparent(false);
+		topmostProp->setClickThrough(false);
+	}
+	else {
+		//wat is dis
+	}
 
 	return true;
+}
+
+void registerHotkeyWithInfo(HOTKEY_INFO info) {
+	RegisterHotKey(optionHandle, info.id, info.mod, info.button);
 }
 
 int main() {
@@ -59,13 +94,18 @@ int main() {
 		return 404;
 	}
 
-	WindowProperty testWindow(topmost);
-	testWindow.setTransparent(true);
-	testWindow.setTransparent(true);
+	topmostProp = new WindowProperty(topmost);
 
-	/*bool madeTransparent = SetTransparent(topmost);
-	bool madeTopmost = SetTopmost(topmost);
-	bool madeClickThrough = SetClickThrough(topmost);*/
+	/*WindowProperty testWindow(topmost);
+	println(testWindow.isTransparent())
+	testWindow.setTransparent(true);
+	println(testWindow.isTransparent())
+	println(testWindow.isTopmost())
+	testWindow.setTopmost(true);
+	println(testWindow.isTopmost())
+	println(testWindow.isClickThrough())
+	testWindow.setClickThrough(true);
+	println(testWindow.isClickThrough())*/
 
 	form optionForm;
 	optionForm.caption("LookThroughWindows - Options");
@@ -74,7 +114,10 @@ int main() {
 	subclass sc(optionForm);
 	sc.make_before(WM_HOTKEY, onHotkeyPress);
 
-	RegisterHotKey(optionHandle, HOTKEY_ID, HOTKEY_MOD, HOTKEY_BUTTON);
+	//RegisterHotKey(optionHandle, HOTKEY_ID, HOTKEY_MOD, HOTKEY_BUTTON0);
+	//RegisterHotKey(optionHandle, HOTKEY_ID+1, HOTKEY_MOD, HOTKEY_BUTTON1);
+	registerHotkeyWithInfo(watchable);
+	registerHotkeyWithInfo(moveable);
 
 	optionForm.show();
 
@@ -86,25 +129,25 @@ int main() {
 	return 0;
 }
 
-bool SetTransparent(HWND window) {
-	LONG_PTR exStyle = GetWindowLongPtr(window, GWL_EXSTYLE);
-	exStyle |= WS_EX_LAYERED;
-	LONG ret = SetWindowLongPtr(window, GWL_EXSTYLE, exStyle);
-	SetLayeredWindowAttributes(window, NULL, 128, LWA_ALPHA);
-
-	return ret;
-}
-
-bool SetTopmost(HWND window) {
-	/*LONG_PTR exStyle = GetWindowLongPtr(window, GWL_EXSTYLE);
-	exStyle |= WS_EX_TOPMOST;
-	LONG ret = SetWindowLongPtr(window, GWL_EXSTYLE, exStyle);
-	
-	return ret;*/
-
-	return SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-}
-
-bool SetClickThrough(HWND window) {
-	return SetWindowLongPtr(window, GWL_EXSTYLE, GetWindowLong(window, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
-}
+//bool SetTransparent(HWND window) {
+//	LONG_PTR exStyle = GetWindowLongPtr(window, GWL_EXSTYLE);
+//	exStyle |= WS_EX_LAYERED;
+//	LONG ret = SetWindowLongPtr(window, GWL_EXSTYLE, exStyle);
+//	SetLayeredWindowAttributes(window, NULL, 128, LWA_ALPHA);
+//
+//	return ret;
+//}
+//
+//bool SetTopmost(HWND window) {
+//	/*LONG_PTR exStyle = GetWindowLongPtr(window, GWL_EXSTYLE);
+//	exStyle |= WS_EX_TOPMOST;
+//	LONG ret = SetWindowLongPtr(window, GWL_EXSTYLE, exStyle);
+//	
+//	return ret;*/
+//
+//	return SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+//}
+//
+//bool SetClickThrough(HWND window) {
+//	return SetWindowLongPtr(window, GWL_EXSTYLE, GetWindowLong(window, GWL_EXSTYLE) | WS_EX_LAYERED | WS_EX_TRANSPARENT);
+//}

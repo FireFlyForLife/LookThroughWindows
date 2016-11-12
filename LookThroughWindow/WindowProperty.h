@@ -2,11 +2,11 @@
 #include <Windows.h>
 #include <stdio.h>
 
-class WindowProperty
+class WindowProperties
 {
 public:
-	WindowProperty(HWND);
-	~WindowProperty();
+	WindowProperties(HWND);
+	~WindowProperties();
 
 	bool setTransparent(bool look_through);
 	bool isTransparent();
@@ -14,6 +14,8 @@ public:
 	bool isTopmost();
 	bool setClickThrough(bool click_through);
 	bool isClickThrough();
+
+	bool autoClose = true;
 
 private:
 	HWND handle = NULL;
