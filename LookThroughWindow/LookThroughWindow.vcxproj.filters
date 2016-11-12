@@ -21,7 +21,7 @@
     <ClCompile Include="subclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WindowProperty.cpp">
+    <ClCompile Include="WindowProperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

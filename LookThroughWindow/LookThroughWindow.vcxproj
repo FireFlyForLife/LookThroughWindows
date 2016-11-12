@@ -119,7 +119,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="subclass.cpp" />
-    <ClCompile Include="WindowProperty.cpp" />
+    <ClCompile Include="WindowProperties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="subclass.h" />

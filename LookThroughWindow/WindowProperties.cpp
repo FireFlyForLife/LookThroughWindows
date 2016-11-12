@@ -2,12 +2,12 @@
 
 
 
-WindowProperty::WindowProperty(HWND handle) : handle(handle)
+WindowProperties::WindowProperties(HWND handle) : handle(handle)
 {
 }
 
 
-WindowProperty::~WindowProperty()
+WindowProperties::~WindowProperties()
 {
 	if (autoClose) {
 		setTopmost(false);
@@ -18,7 +18,7 @@ WindowProperty::~WindowProperty()
 }
 
 //MAYBE: Make the return values a little more usefull
-bool WindowProperty::setTransparent(bool look_through) {
+bool WindowProperties::setTransparent(bool look_through) {
 	if (look_through) {
 		if (isTransparent())
 			return false;
@@ -43,13 +43,13 @@ bool WindowProperty::setTransparent(bool look_through) {
 	}
 }
 
-bool WindowProperty::isTransparent()
+bool WindowProperties::isTransparent()
 {
 	LONG_PTR exStyle = GetWindowLongPtr(handle, GWL_EXSTYLE);
 	return (bool)(exStyle & WS_EX_LAYERED);
 }
 
-bool WindowProperty::setTopmost(bool top_most) {
+bool WindowProperties::setTopmost(bool top_most) {
 	if (top_most) {
 		if (isTopmost())
 			return false;
@@ -64,13 +64,13 @@ bool WindowProperty::setTopmost(bool top_most) {
 	}
 }
 
-bool WindowProperty::isTopmost()
+bool WindowProperties::isTopmost()
 {
 	LONG_PTR exStyle = GetWindowLongPtr(handle, GWL_EXSTYLE);
 	return (bool)(exStyle & WS_EX_TOPMOST);
 }
 
-bool WindowProperty::setClickThrough(bool click_through) {
+bool WindowProperties::setClickThrough(bool click_through) {
 	if (click_through) {
 		if (isClickThrough())
 			return false;
@@ -89,7 +89,7 @@ bool WindowProperty::setClickThrough(bool click_through) {
 	}
 }
 
-bool WindowProperty::isClickThrough()
+bool WindowProperties::isClickThrough()
 {
 	LONG_PTR exStyle = GetWindowLongPtr(handle, GWL_EXSTYLE); 
 	return ((bool)(exStyle & WS_EX_LAYERED)) && ((bool)(exStyle & WS_EX_TRANSPARENT));//TODO: A more elegant solution

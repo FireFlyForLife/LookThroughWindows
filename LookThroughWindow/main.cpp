@@ -44,7 +44,7 @@ bool SetClickThrough(HWND);
 
 timer msgQ;
 HWND optionHandle = NULL;
-WindowProperty* topmostProp = NULL;
+WindowProperties* topmostProp = NULL;
 
 std::recursive_mutex subclass::mutex_;
 std::map<HWND, subclass*> subclass::table_;
@@ -94,9 +94,9 @@ int main() {
 		return 404;
 	}
 
-	topmostProp = new WindowProperty(topmost);
+	topmostProp = new WindowProperties(topmost);
 
-	/*WindowProperty testWindow(topmost);
+	/*WindowProperties testWindow(topmost);
 	println(testWindow.isTransparent())
 	testWindow.setTransparent(true);
 	println(testWindow.isTransparent())
