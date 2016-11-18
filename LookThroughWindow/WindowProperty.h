@@ -15,6 +15,8 @@ public:
 	bool setClickThrough(bool click_through);
 	bool isClickThrough();
 
+	HWND getWindow(HWND);
+
 	bool autoClose = true;
 
 private:

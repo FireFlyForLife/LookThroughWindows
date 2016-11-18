@@ -92,6 +92,10 @@ public:
 		msg_table_.clear();
 		_m_subclass(false);
 	}
+
+	HWND getWindow() {
+		return native_;
+	}
 private:
 	void _m_subclass(bool enable)
 	{

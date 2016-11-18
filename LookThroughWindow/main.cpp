@@ -4,11 +4,13 @@
 #include <Windows.h>
 #include <chrono>
 #include <thread>
+#include <stdexcept>
 
 #include <nana/gui.hpp>
 #include <nana/gui/widgets/form.hpp>
 #include <nana/gui/timer.hpp>
 #include "subclass.h"
+#include "WindowManager.h"
 #include "WindowProperty.h"
 
 #define str(s) std::to_string(s)
@@ -38,6 +40,8 @@ const int HOTKEY_BUTTON1 = 0x48; //h
 const int HOTKEY_MOD = MOD_NOREPEAT | MOD_CONTROL | MOD_SHIFT;
 const int HOTKEY_ID = 1020304;
 
+WindowManager manager;
+
 bool SetTransparent(HWND);
 bool SetTopmost(HWND);
 bool SetClickThrough(HWND);
@@ -45,6 +49,8 @@ bool SetClickThrough(HWND);
 timer msgQ;
 HWND optionHandle = NULL;
 WindowProperties* topmostProp = NULL;
+
+
 
 std::recursive_mutex subclass::mutex_;
 std::map<HWND, subclass*> subclass::table_;
@@ -65,6 +71,9 @@ void msges(const nana::arg_elapse& elapsed) {
 }
 
 bool onHotkeyPress(UINT msg, WPARAM hotkeyID, LPARAM lParam, LRESULT* lResult) {
+	return true; //this needs to be called in WindowManager#onHotkeyPressed
+
+	printf("Hotkey1 pressed!\n");
 	if (hotkeyID == watchable.id) {
 		topmostProp->setTopmost(true);
 		topmostProp->setTransparent(true);
@@ -77,6 +86,7 @@ bool onHotkeyPress(UINT msg, WPARAM hotkeyID, LPARAM lParam, LRESULT* lResult) {
 	}
 	else {
 		//wat is dis
+		throw std::exception("that hotkey id us not registered");
 	}
 
 	return true;
@@ -113,11 +123,12 @@ int main() {
 
 	subclass sc(optionForm);
 	sc.make_before(WM_HOTKEY, onHotkeyPress);
+	manager.registerHotkeys(&sc);
 
 	//RegisterHotKey(optionHandle, HOTKEY_ID, HOTKEY_MOD, HOTKEY_BUTTON0);
 	//RegisterHotKey(optionHandle, HOTKEY_ID+1, HOTKEY_MOD, HOTKEY_BUTTON1);
-	registerHotkeyWithInfo(watchable);
-	registerHotkeyWithInfo(moveable);
+	//registerHotkeyWithInfo(watchable);
+	//registerHotkeyWithInfo(moveable);
 
 	optionForm.show();
 
