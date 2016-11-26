@@ -14,15 +14,14 @@ WindowManager::WindowManager(subclass * sc)
 
 WindowManager::~WindowManager()
 {
+	//TODO: Unregister hotkeys
 }
 
 void WindowManager::registerHotkeys(subclass* sc)
 {
-	typedef std::function<bool(UINT, WPARAM, LPARAM, LRESULT*)> hotkey_callback;
-	//hotkey_callback callback = std::bind(&WindowManager::onHotkeyPressed, this, std::placeholders::_1);
 	sc->make_after(WM_HOTKEY, [this](UINT u, WPARAM w, LPARAM l, LRESULT* r) {
 		bool ret = this->onHotkeyPressed(u, w, l, r);
-		printf("%i", ret);
+		//printf("%i", ret);
 		return ret;
 	});
 	HWND handle = sc->getWindow();
@@ -30,31 +29,66 @@ void WindowManager::registerHotkeys(subclass* sc)
 	RegisterHotKey(handle, moveable_id, MOD_NOREPEAT | MOD_CONTROL | MOD_SHIFT, 0x48); //h
 }
 
-void WindowManager::addForegroundWindow()
+void WindowManager::addWindow(HWND window)
 {
+	window_map::iterator it = windows.find(window);
+	if (it == windows.end()) {
+		WindowProperties* prop = new WindowProperties(window);
+		prop->setTopmost(true);
+		prop->setTransparent(true);
+		prop->setClickThrough(true);
+
+		windows.insert(std::pair<HWND, WindowProperties*>(window, prop));
+	}
+}
+
+void WindowManager::delWindow(HWND window)
+{
+	window_map::iterator it = windows.find(window);
+	if (it != windows.end()) {
+		WindowProperties* prop = it->second;
+		delete prop; //MAYBE: not rely on deconstructor but write the reset explicitly.
+		windows.erase(it);
+	}
 }
 
 bool WindowManager::onHotkeyPressed(UINT msg, WPARAM hotkeyID, LPARAM lParam, LRESULT * lResult)
 {
 	HWND top = GetForegroundWindow();
-	for each (WindowProperties prop in windows)
+
+	switch (hotkeyID)
 	{
-		if(prop)
+	case watchable_id:
+		addWindow(top);
+		break;
+	case moveable_id:
+		delWindow(top);
+		break;
+	default:
+		printf("%i is not an ID recognised by this WindowManager\n", hotkeyID);
+		break;
 	}
-	WindowProperties topmostProp(NULL);
-	if (hotkeyID == watchable_id) {
-		topmostProp.setTopmost(true);
-		topmostProp.setTransparent(true);
-		topmostProp.setClickThrough(true);
-	}
-	else if (hotkeyID == moveable_id) {
-		topmostProp.setTopmost(false);
-		topmostProp.setTransparent(false);
-		topmostProp.setClickThrough(false);
-	}
-	else {
-		//wat is dis
-		throw std::exception("that hotkey id us not registered");
-	}
+	
+	/*window_map::iterator it = windows.find(top);
+	if (it != windows.end()) {
+		WindowProperties* prop = it->second;
+
+	}*/
+
+	//WindowProperties topmostProp(NULL);
+	//if (hotkeyID == watchable_id) {
+	//	topmostProp.setTopmost(true);
+	//	topmostProp.setTransparent(true);
+	//	topmostProp.setClickThrough(true);
+	//}
+	//else if (hotkeyID == moveable_id) {
+	//	topmostProp.setTopmost(false);
+	//	topmostProp.setTransparent(false);
+	//	topmostProp.setClickThrough(false);
+	//}
+	//else {
+	//	//wat is dis
+	//	throw std::exception("that hotkey id us not registered");
+	//}
 	return true;
 }

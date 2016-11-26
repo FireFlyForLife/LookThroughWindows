@@ -27,15 +27,21 @@
     <ClCompile Include="WindowManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Window_Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="subclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowProperty.h">
+    <ClInclude Include="WindowManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WindowManager.h">
+    <ClInclude Include="WindowProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Window_Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

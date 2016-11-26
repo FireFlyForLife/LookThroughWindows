@@ -121,11 +121,13 @@
     <ClCompile Include="subclass.cpp" />
     <ClCompile Include="WindowManager.cpp" />
     <ClCompile Include="WindowProperties.cpp" />
+    <ClCompile Include="Window_Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="subclass.h" />
     <ClInclude Include="WindowManager.h" />
-    <ClInclude Include="WindowProperty.h" />
+    <ClInclude Include="WindowProperties.h" />
+    <ClInclude Include="Window_Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

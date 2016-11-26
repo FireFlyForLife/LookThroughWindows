@@ -15,9 +15,11 @@ public:
 	bool setClickThrough(bool click_through);
 	bool isClickThrough();
 
-	HWND getWindow(HWND);
+	void activate();
 
-	bool autoClose = true;
+	HWND getWindow();
+
+	bool autoReset = true;
 
 private:
 	HWND handle = NULL;

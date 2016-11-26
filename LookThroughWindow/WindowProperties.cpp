@@ -1,4 +1,4 @@
-#include "WindowProperty.h"
+#include "WindowProperties.h"
 
 
 
@@ -9,7 +9,7 @@ WindowProperties::WindowProperties(HWND handle) : handle(handle)
 
 WindowProperties::~WindowProperties()
 {
-	if (autoClose) {
+	if (autoReset) {
 		setTopmost(false);
 		setClickThrough(false);
 		setTransparent(false);
@@ -95,7 +95,17 @@ bool WindowProperties::isClickThrough()
 	return ((bool)(exStyle & WS_EX_LAYERED)) && ((bool)(exStyle & WS_EX_TRANSPARENT));//TODO: A more elegant solution
 }
 
-HWND WindowProperties::getWindow(HWND)
+void WindowProperties::activate()
+{
+	//Bring to foreground?
+
+	//Make overlay buttons visible
+
+	//reset starttime
+
+}
+
+HWND WindowProperties::getWindow()
 {
 	return handle;
 }

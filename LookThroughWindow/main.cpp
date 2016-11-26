@@ -11,7 +11,7 @@
 #include <nana/gui/timer.hpp>
 #include "subclass.h"
 #include "WindowManager.h"
-#include "WindowProperty.h"
+#include "WindowProperties.h"
 
 #define str(s) std::to_string(s)
 #define println(s) if(typeid(s) == typeid(bool)){\
