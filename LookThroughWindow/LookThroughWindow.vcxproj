@@ -72,6 +72,10 @@
     <IncludePath>$(SolutionDir)..\Cpp_Lib\Nana_1.4.1\nana\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\Cpp_Lib\Nana_1.4.1\nana\build\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)..\Cpp_Lib\Nana_1.4.1\nana\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\Cpp_Lib\Nana_1.4.1\nana\build\bin;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -97,10 +101,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>nana_v140_Release_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
